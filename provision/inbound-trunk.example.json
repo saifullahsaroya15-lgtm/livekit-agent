@@ -1,0 +1,11 @@
+{
+  "trunk": {
+    "name": "twilio-inbound",
+    "numbers": ["+15551234567"],
+    "krispEnabled": true,
+    "metadata": {
+      "provider": "twilio"
+    }
+  }
+}
+

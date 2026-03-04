@@ -1,0 +1,33 @@
+services:
+  livekit:
+    ports:
+      # WebRTC media (required for production)
+      - "50000-60000:50000-60000/udp"
+
+  sip:
+    ports:
+      # SIP signaling (UDP commonly used by providers)
+      - "5060:5060/udp"
+      # RTP media for SIP calls
+      - "10000-20000:10000-20000/udp"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - livekit
+    environment:
+      ACME_EMAIL: "${ACME_EMAIL}"
+      LIVEKIT_PUBLIC_HOST: "${LIVEKIT_PUBLIC_HOST}"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
+

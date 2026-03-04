@@ -1,0 +1,10 @@
+services:
+  # Local-only override (intentionally minimal).
+  # LiveKit is available directly at:
+  # - http://localhost:7880
+  # - ws://localhost:7880
+  livekit:
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+

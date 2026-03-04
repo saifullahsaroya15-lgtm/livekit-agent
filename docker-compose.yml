@@ -1,0 +1,62 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "\"\"", "--appendonly", "no"]
+
+  livekit:
+    # Pin/override for repeatable deployments
+    image: "${LIVEKIT_SERVER_IMAGE:-livekit/livekit-server:v1.9.11}"
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      # Injected from .env at runtime
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+      LIVEKIT_REDIS_ADDRESS: "redis:6379"
+      LIVEKIT_LOG_LEVEL: "info"
+      LIVEKIT_PORT: "7880"
+      LIVEKIT_WEBRTC_TCP_PORT: "7881"
+      LIVEKIT_RTC_ENABLE_UDP: "true"
+      LIVEKIT_RTC_UDP_PORT: "50000"
+      LIVEKIT_RTC_UDP_PORT_RANGE: "50000-60000"
+      # Needed in most cloud/NAT environments so clients receive the public candidate.
+      # If auto-discovery doesn't work in your environment, set LIVEKIT_RTC_NODE_IP explicitly in .env.
+      LIVEKIT_RTC_USE_EXTERNAL_IP: "${LIVEKIT_RTC_USE_EXTERNAL_IP:-true}"
+      LIVEKIT_RTC_NODE_IP: "${LIVEKIT_RTC_NODE_IP:-}"
+    ports:
+      # Web/API (fronted by Caddy in production)
+      - "7880:7880"
+      - "7881:7881"
+
+  sip:
+    # Pin/override for repeatable deployments
+    image: "${LIVEKIT_SIP_IMAGE:-livekit/sip:latest}"
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - livekit
+    environment:
+      LIVEKIT_API_KEY: "${LIVEKIT_API_KEY}"
+      LIVEKIT_API_SECRET: "${LIVEKIT_API_SECRET}"
+      # Use the internal docker network for SIP->LiveKit signalling.
+      LIVEKIT_WS_URL: "ws://livekit:7880"
+      SIP_CONFIG_BODY: |
+        log_level: info
+        health_port: 8080
+        prometheus_port: 2112
+        sip_port: 5060
+        rtp_port:
+          start: 10000
+          end: 20000
+        redis:
+          address: redis:6379
+    ports:
+      # SIP signaling
+      - "5060:5060/tcp"
+
+  # Production TLS proxy is defined in docker-compose.prod.yml.
+  # This base compose is safe to run locally (no Let's Encrypt, no large UDP ranges).
+
+
+

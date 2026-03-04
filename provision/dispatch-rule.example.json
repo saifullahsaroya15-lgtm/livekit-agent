@@ -1,0 +1,17 @@
+{
+  "dispatch_rule": {
+    "rule": {
+      "dispatchRuleIndividual": {
+        "roomPrefix": "sip-call-"
+      }
+    },
+    "roomConfig": {
+      "agents": [
+        {
+          "agentName": "sip-agent"
+        }
+      ]
+    }
+  }
+}
+

@@ -1,0 +1,9 @@
+{
+  email {$ACME_EMAIL}
+}
+
+{$LIVEKIT_PUBLIC_HOST} {
+  encode gzip
+  reverse_proxy livekit:7880
+}
+
