@@ -1,0 +1,13 @@
+{
+    "name": "livekit-agent",
+    "version": "1.0.0",
+    "description": "LiveKit Sip Agent Boilerplate",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "livekit-client": "^2.0.0",
+        "livekit-server-sdk": "^2.0.0"
+    }
+}
