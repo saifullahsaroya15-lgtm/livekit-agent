@@ -1,0 +1,11 @@
+# Local & production env files (never commit secrets)
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.log
+

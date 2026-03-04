@@ -12,7 +12,7 @@ services:
       - redis
     environment:
       # Injected from .env at runtime
-      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}:${LIVEKIT_API_SECRET}"
       LIVEKIT_REDIS_ADDRESS: "redis:6379"
       LIVEKIT_LOG_LEVEL: "info"
       LIVEKIT_PORT: "7880"
@@ -37,7 +37,7 @@ services:
       - redis
       - livekit
     environment:
-      LIVEKIT_API_KEY: "${LIVEKIT_API_KEY}"
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}:${LIVEKIT_API_SECRET}"
       LIVEKIT_API_SECRET: "${LIVEKIT_API_SECRET}"
       # Use the internal docker network for SIP->LiveKit signalling.
       LIVEKIT_WS_URL: "ws://livekit:7880"
